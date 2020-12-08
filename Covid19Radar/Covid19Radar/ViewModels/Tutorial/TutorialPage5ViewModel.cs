@@ -1,7 +1,6 @@
 ﻿using Covid19Radar.Model;
 using Covid19Radar.Resources;
 using Covid19Radar.Services;
-using Covid19Radar.Services.Logs;
 using Covid19Radar.Views;
 //using Plugin.LocalNotification;
 using Prism.Navigation;
@@ -11,13 +10,11 @@ namespace Covid19Radar.ViewModels
 {
     public class TutorialPage5ViewModel : ViewModelBase
     {
-        private readonly ILoggerService loggerService;
         private readonly UserDataService userDataService;
         private UserDataModel userData;
 
-        public TutorialPage5ViewModel(INavigationService navigationService, ILoggerService loggerService, UserDataService userDataService) : base(navigationService, userDataService)
+        public TutorialPage5ViewModel(INavigationService navigationService, UserDataService userDataService) : base(navigationService, userDataService)
         {
-            this.loggerService = loggerService;
             this.userDataService = userDataService;
             userData = this.userDataService.Get();
 
@@ -25,8 +22,6 @@ namespace Covid19Radar.ViewModels
 
         public Command OnClickEnable => new Command(async () =>
         {
-            loggerService.StartMethod();
-
             //var notification = new NotificationRequest
             //{
             //    NotificationId = 100,
@@ -37,18 +32,12 @@ namespace Covid19Radar.ViewModels
             userData.IsNotificationEnabled = true;
             await userDataService.SetAsync(userData);
             await NavigationService.NavigateAsync(nameof(TutorialPage6));
-
-            loggerService.EndMethod();
         });
         public Command OnClickDisable => new Command(async () =>
         {
-            loggerService.StartMethod();
-
             userData.IsNotificationEnabled = false;
             await userDataService.SetAsync(userData);
             await NavigationService.NavigateAsync(nameof(TutorialPage6));
-
-            loggerService.EndMethod();
         });
 
     }

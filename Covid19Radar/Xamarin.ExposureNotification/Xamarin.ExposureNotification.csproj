@@ -57,5 +57,49 @@
 		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
 		<PackageReference Include="Xamarin.iOS.ExposureNotification" Version="1.0.0" />
 	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="XAgconnectCore-1.4.0.300">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XAgconnectCore-1.4.0.300.dll</HintPath>
+		</Reference>
+		<Reference Include="XAvailableUpdate-5.0.4.301">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XAvailableUpdate-5.0.4.301.dll</HintPath>
+		</Reference>
+		<Reference Include="XBase-5.0.4.301">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XBase-5.0.4.301.dll</HintPath>
+		</Reference>
+		<Reference Include="XContactShield-5.0.4.300">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XContactShield-5.0.4.300.dll</HintPath>
+		</Reference>
+		<Reference Include="XDevice-5.0.4.301">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XDevice-5.0.4.301.dll</HintPath>
+		</Reference>
+		<Reference Include="XLog-5.0.4.301">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XLog-5.0.4.301.dll</HintPath>
+		</Reference>
+		<Reference Include="XNetworkCommon-4.0.18.300">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XNetworkCommon-4.0.18.300.dll</HintPath>
+		</Reference>
+		<Reference Include="XNetworkGrs-4.0.18.300">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XNetworkGrs-4.0.18.300.dll</HintPath>
+		</Reference>
+		<Reference Include="XSecurityEncrypt-1.1.5.302">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XSecurityEncrypt-1.1.5.302.dll</HintPath>
+		</Reference>
+		<Reference Include="XSecuritySsl-1.1.5.302">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XSecuritySsl-1.1.5.302.dll</HintPath>
+		</Reference>
+		<Reference Include="XStats-5.0.4.301">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XStats-5.0.4.301.dll</HintPath>
+		</Reference>
+		<Reference Include="XTasks-1.4.1.300">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XTasks-1.4.1.300.dll</HintPath>
+		</Reference>
+		<Reference Include="XUi-5.0.4.301">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XUi-5.0.4.301.dll</HintPath>
+		</Reference>
+		<Reference Include="XUpdate-2.0.7.302">
+			<HintPath>..\Covid19Radar.Android\HmsLibraries\XUpdate-2.0.7.302.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
 </Project>

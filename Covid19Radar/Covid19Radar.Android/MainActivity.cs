@@ -10,12 +10,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using Covid19Radar.Common;
-using Covid19Radar.Droid.Services.Logs;
-using Covid19Radar.Services.Logs;
+using Covid19Radar.Droid.Services;
+using Covid19Radar.Services;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Acr.UserDialogs;
 using Covid19Radar.Renderers;
+using Com.Huawei.Agconnect.Config;
+using Xamarin.ExposureNotifications;
 //using Plugin.LocalNotification;
 
 namespace Covid19Radar.Droid
@@ -24,7 +26,15 @@ namespace Covid19Radar.Droid
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         public static object dataLock = new object();
-
+        protected override void AttachBaseContext(Context context)
+        {
+            base.AttachBaseContext(context);
+            if (AvailableCheckUtil.IsHms())
+            {
+                AGConnectServicesConfig config = AGConnectServicesConfig.FromContext(context);
+                config.OverlayWith(new HmsLazyInputStream(context));
+            }
+        }
         protected override void OnCreate(Bundle savedInstanceState)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
@@ -59,8 +69,7 @@ namespace Covid19Radar.Droid
         {
             public void RegisterTypes(IContainerRegistry containerRegistry)
             {
-                // Services
-                containerRegistry.RegisterSingleton<ILogPathDependencyService, LogPathServiceAndroid>();
+                
             }
         }
 
