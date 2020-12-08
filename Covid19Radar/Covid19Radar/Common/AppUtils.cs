@@ -1,6 +1,5 @@
 ﻿using Acr.UserDialogs;
 using Covid19Radar.Resources;
-using Covid19Radar.Services.Logs;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
@@ -41,10 +40,8 @@ namespace Covid19Radar.Common
 
         }
 
-        public static async void CheckVersion(ILoggerService loggerService)
+        public static async void CheckVersion()
         {
-            loggerService.StartMethod();
-
             var uri = AppResources.UrlVersion;
             using (var client = new HttpClient())
             {
@@ -72,11 +69,9 @@ namespace Covid19Radar.Common
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.ToString());
-                    loggerService.Exception("Failed to check version.", ex);
                 }
                 finally
                 {
-                    loggerService.EndMethod();
                 }
             }
         }

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using Covid19Radar.Resources;
-using Covid19Radar.Services.Logs;
-using Covid19Radar.Views;
-using Prism.Navigation;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -11,62 +8,54 @@ namespace Covid19Radar.ViewModels
 {
     public class InqueryPageViewModel : ViewModelBase
     {
-        private readonly ILoggerService loggerService;
 
-        public Func<string, BrowserLaunchMode, Task> BrowserOpenAsync = Browser.OpenAsync;
-        public Func<string, string, string[], Task> ComposeEmailAsync { get; set; } = Email.ComposeAsync;
-
-        public InqueryPageViewModel(INavigationService navigationService, ILoggerService loggerService) : base(navigationService)
+        public InqueryPageViewModel() : base()
         {
-            this.loggerService = loggerService;
         }
 
-        public Command OnClickQuestionCommand => new Command(async () =>
+        public Command OnClickSite1 => new Command(async () =>
         {
-            loggerService.StartMethod();
+            var uri = "https://corona.go.jp/";
+            await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        });
 
+        public Command OnClickSite2 => new Command(async () =>
+        {
+            var uri = "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/cocoa_00138.html";
+            await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        });
+
+        public Command OnClickSite3 => new Command(async () =>
+        {
             var uri = "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/covid19_qa_kanrenkigyou_00009.html";
-            await BrowserOpenAsync(uri, BrowserLaunchMode.SystemPreferred);
-
-            loggerService.EndMethod();
+            await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
         });
 
-        public Command OnClickSendLogCommand => new Command(async () =>
+        public Command OnClickEmail => new Command(async () =>
         {
-            loggerService.StartMethod();
 
-            _ = await NavigationService.NavigateAsync(nameof(SendLogConfirmationPage));
-
-            loggerService.EndMethod();
-        });
-
-        public Command OnClickEmailCommand => new Command(async () =>
-        {
-            loggerService.StartMethod();
             try
             {
-                await ComposeEmailAsync(
-                    AppResources.InquiryMailSubject,
-                    AppResources.InquiryMailBody.Replace("\\r\\n", "\r\n"),
-                    new string[] { AppSettings.Instance.SupportEmail });
-
-                loggerService.EndMethod();
+                List<string> recipients = new List<string>();
+                recipients.Add(AppSettings.Instance.SupportEmail);
+                var message = new EmailMessage
+                {
+                    Subject = AppResources.InqueryMailSubject,
+                    Body = AppResources.InqueryMailBody.Replace("\\r\\n", "\r\n"),
+                    To = recipients
+                };
+                await Email.ComposeAsync(message);
+            }
+            catch (FeatureNotSupportedException fbsEx)
+            {
+                // Email is not supported on this device
             }
             catch (Exception ex)
             {
-                loggerService.Exception("Exception", ex);
-                loggerService.EndMethod();
+                // Some other exception occurred
             }
         });
 
-        public Command OnClickAboutAppCommand => new Command(async () =>
-        {
-            loggerService.StartMethod();
 
-            var uri = "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/cocoa_00138.html";
-            await BrowserOpenAsync(uri, BrowserLaunchMode.SystemPreferred);
-
-            loggerService.EndMethod();
-        });
     }
 }

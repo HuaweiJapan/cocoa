@@ -1,6 +1,5 @@
 ﻿using Covid19Radar.Model;
 using Covid19Radar.Services;
-using Covid19Radar.Services.Logs;
 using Prism.Navigation;
 using Xamarin.Forms;
 using System;
@@ -17,8 +16,6 @@ namespace Covid19Radar.ViewModels
 {
     public class NotifyOtherPageViewModel : ViewModelBase
     {
-        private readonly ILoggerService loggerService;
-
         private string _diagnosisUid;
         public string DiagnosisUid
         {
@@ -40,10 +37,9 @@ namespace Covid19Radar.ViewModels
         private readonly UserDataService userDataService;
         private UserDataModel userData;
 
-        public NotifyOtherPageViewModel(INavigationService navigationService, ILoggerService loggerService, UserDataService userDataService) : base(navigationService, userDataService)
+        public NotifyOtherPageViewModel(INavigationService navigationService, UserDataService userDataService) : base(navigationService, userDataService)
         {
             Title = Resources.AppResources.TitileUserStatusSettings;
-            this.loggerService = loggerService;
             this.userDataService = userDataService;
             userData = this.userDataService.Get();
             errorCount = 0;
@@ -52,8 +48,6 @@ namespace Covid19Radar.ViewModels
 
         public Command OnClickRegister => (new Command(async () =>
         {
-            loggerService.StartMethod();
-
             var result = await UserDialogs.Instance.ConfirmAsync(AppResources.NotifyOtherPageDiag1Message, AppResources.NotifyOtherPageDiag1Title, AppResources.ButtonAgree, AppResources.ButtonCancel);
             if (!result)
             {
@@ -62,9 +56,6 @@ namespace Covid19Radar.ViewModels
                     "",
                     Resources.AppResources.ButtonOk
                     );
-
-                loggerService.Info($"Canceled by user.");
-                loggerService.EndMethod();
                 return;
             }
 
@@ -80,13 +71,8 @@ namespace Covid19Radar.ViewModels
                 );
                 UserDialogs.Instance.HideLoading();
                 Xamarin.Forms.DependencyService.Get<ICloseApplication>().closeApplication();
-
-                loggerService.Error($"Exceeded the number of trials.");
-                loggerService.EndMethod();
                 return;
             }
-
-            loggerService.Info($"Number of attempts to submit diagnostic number. ({errorCount + 1} of {AppConstants.MaxErrorCount})");
 
             if (errorCount > 0)
             {
@@ -111,9 +97,6 @@ namespace Covid19Radar.ViewModels
                 errorCount++;
                 await userDataService.SetAsync(userData);
                 UserDialogs.Instance.HideLoading();
-
-                loggerService.Error($"No diagnostic number entered.");
-                loggerService.EndMethod();
                 return;
             }
 
@@ -128,9 +111,6 @@ namespace Covid19Radar.ViewModels
                 errorCount++;
                 await userDataService.SetAsync(userData);
                 UserDialogs.Instance.HideLoading();
-
-                loggerService.Error($"Incorrect diagnostic number format.");
-                loggerService.EndMethod();
                 return;
             }
 
@@ -149,17 +129,12 @@ namespace Covid19Radar.ViewModels
                     );
                     UserDialogs.Instance.HideLoading();
                     await NavigationService.NavigateAsync("/" + nameof(MenuPage) + "/" + nameof(NavigationPage) + "/" + nameof(HomePage));
-
-                    loggerService.Warning($"Exposure notification is disable.");
-                    loggerService.EndMethod();
                     return;
                 }
 
                 // Set the submitted UID
                 userData.AddDiagnosis(_diagnosisUid, new DateTimeOffset(DateTime.Now));
                 await userDataService.SetAsync(userData);
-
-                loggerService.Info($"Submit the processing number.");
 
                 // Submit our diagnosis
                 await Xamarin.ExposureNotifications.ExposureNotification.SubmitSelfDiagnosisAsync();
@@ -170,9 +145,6 @@ namespace Covid19Radar.ViewModels
                     Resources.AppResources.ButtonOk
                 );
                 await NavigationService.NavigateAsync("/" + nameof(MenuPage) + "/" + nameof(NavigationPage) + "/" + nameof(HomePage));
-
-                loggerService.Info($"Successfully submit the diagnostic number.");
-                loggerService.EndMethod();
             }
             catch (InvalidDataException ex)
             {
@@ -182,8 +154,6 @@ namespace Covid19Radar.ViewModels
                     Resources.AppResources.NotifyOtherPageDialogExceptionTargetDiagKeyNotFoundTitle,
                     Resources.AppResources.ButtonOk
                 );
-                loggerService.Exception("Failed to submit UID invalid data.", ex);
-                loggerService.EndMethod();
             }
             catch (Exception ex)
             {
@@ -193,8 +163,6 @@ namespace Covid19Radar.ViewModels
                     Resources.AppResources.ButtonFailed,
                     Resources.AppResources.ButtonOk
                 );
-                loggerService.Exception("Failed to submit UID.", ex);
-                loggerService.EndMethod();
             }
             finally
             {
